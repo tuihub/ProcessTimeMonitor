@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "ProcessTimeMonitor": {
+      "commandName": "Project"
+    }
+  }
+}

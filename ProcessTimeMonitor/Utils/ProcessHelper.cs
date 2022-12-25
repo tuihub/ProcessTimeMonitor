@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SavedataManager.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,11 +27,15 @@ namespace ProcessTimeMonitor.Utils
                     if ((int)childProcessId != Process.GetCurrentProcess().Id)
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
+                        Log.Debug("WaitForAllToExit", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         WaitForAllToExit(childProcess);
+                        Log.Debug("WaitForAllToExit", $"Child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited with exit code {childProcess.ExitCode}");
                     }
                 }
             }
+            Log.Debug("WaitForAllToExit", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
             process.WaitForExit();
+            Log.Debug("WaitForAllToExit", $"Process {process.ProcessName}(PID = {process.Id}) exited with exit code {process.ExitCode}");
         }
     }
 }

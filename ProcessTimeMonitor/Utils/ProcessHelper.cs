@@ -27,15 +27,15 @@ namespace ProcessTimeMonitor.Utils
                     if ((int)childProcessId != Process.GetCurrentProcess().Id)
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
-                        Log.Debug("WaitForAllToExit", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
+                        Log.Debug("WaitForAllToExit", $"Wait for child process {childProcess.GetProcessNameEx()}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         WaitForAllToExit(childProcess, true);
-                        Log.Debug("WaitForAllToExit", $"Child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited");
+                        Log.Debug("WaitForAllToExit", $"Child process {childProcess.GetProcessNameEx()}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited");
                     }
                 }
             }
-            Log.Debug("WaitForAllToExit", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
+            Log.Debug("WaitForAllToExit", $"Wait for process {process.GetProcessNameEx()}(PID = {process.Id}) to exit");
             process.WaitForExit();
-            Log.Debug("WaitForAllToExit", $"Process {process.ProcessName}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
+            Log.Debug("WaitForAllToExit", $"Process {process.GetProcessNameEx()}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
         }
         public static async Task WaitForAllToExitFullAsync(this Process process, bool isChildProcess = false)
         {
@@ -54,7 +54,7 @@ namespace ProcessTimeMonitor.Utils
                     if ((int)childProcessId != Process.GetCurrentProcess().Id)
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
-                        Log.Debug("WaitForAllToExitFullAsync", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
+                        Log.Debug("WaitForAllToExitFullAsync", $"Wait for child process {childProcess.GetProcessNameEx()}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         var childTask = WaitForAllToExitFullAsync(childProcess, true);
                         Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {childTask.Id}) to taskDict");
                         taskDict.Add(childTask, childProcess);
@@ -62,7 +62,7 @@ namespace ProcessTimeMonitor.Utils
                     }
                 }
             }
-            Log.Debug("WaitForAllToExitFullAsync", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
+            Log.Debug("WaitForAllToExitFullAsync", $"Wait for process {process.GetProcessNameEx()}(PID = {process.Id}) to exit");
             var curMainProcessTask = process.WaitForExitAsync();
             Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {curMainProcessTask.Id}) to taskDict");
             taskDict.Add(curMainProcessTask, process);
@@ -80,11 +80,11 @@ namespace ProcessTimeMonitor.Utils
                 }
                 if (task == curMainProcessTask)
                 {
-                    Log.Debug("WaitForAllToExitFullAsync", $"Process {curProcess.ProcessName}(PID = {curProcess.Id}) exited" + (isChildProcess ? "" : $" with exit code {curProcess.ExitCode}"));
+                    Log.Debug("WaitForAllToExitFullAsync", $"Process {curProcess.GetProcessNameEx()}(PID = {curProcess.Id}) exited" + (isChildProcess ? "" : $" with exit code {curProcess.ExitCode}"));
                 }
                 else
                 {
-                    Log.Debug("WaitForAllToExitFullAsync", $"Child process {curProcess.ProcessName}(PID = {curProcess.Id}, parent PID = {process.Id}) exited");
+                    Log.Debug("WaitForAllToExitFullAsync", $"Child process {curProcess.GetProcessNameEx()}(PID = {curProcess.Id}, parent PID = {process.Id}) exited");
                 }
                 taskList.Remove(task);
             }
@@ -104,15 +104,28 @@ namespace ProcessTimeMonitor.Utils
                     if ((int)childProcessId != Process.GetCurrentProcess().Id)
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
-                        Log.Debug("WaitForAllToExitAsync", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
+                        Log.Debug("WaitForAllToExitAsync", $"Wait for child process {childProcess.GetProcessNameEx()}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         await WaitForAllToExitAsync(childProcess, true);
-                        Log.Debug("WaitForAllToExitAsync", $"Child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited");
+                        Log.Debug("WaitForAllToExitAsync", $"Child process {childProcess.GetProcessNameEx()}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited");
                     }
                 }
             }
-            Log.Debug("WaitForAllToExitAsync", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
+            Log.Debug("WaitForAllToExitAsync", $"Wait for process {process.GetProcessNameEx()}(PID = {process.Id}) to exit");
             await process.WaitForExitAsync();
-            Log.Debug("WaitForAllToExitAsync", $"Process {process.ProcessName}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
+            Log.Debug("WaitForAllToExitAsync", $"Process {process.GetProcessNameEx()}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
+        }
+        public static string GetProcessNameEx(this Process process)
+        {
+            try
+            {
+                return process.ProcessName;
+            }
+            catch (InvalidOperationException e)
+            {
+                Log.Debug("GetProcessNameEx", e.Message);
+                Log.Debug("GetProcessNameEx", e.StackTrace);
+                return "null";
+            }
         }
     }
 }

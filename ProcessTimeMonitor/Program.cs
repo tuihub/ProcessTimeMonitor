@@ -44,6 +44,11 @@ namespace ProcessTimeMonitor
                 Global.LogLevel = LogLevel.DEBUG;
             }
             Process process = new Process();
+            if (opts.UseShellExecute == true)
+            {
+                Log.Debug("Run", $"opts.UseShellExecute = {opts.UseShellExecute}, setting process.StartInfo.UseShellExecute to true");
+                process.StartInfo.UseShellExecute = true;
+            }
             var commandSeq = opts.CommandSeq;
             Log.Debug("Run", $"commandSeq = {String.Join(", ", commandSeq)}");
             process.StartInfo.FileName = commandSeq.First();

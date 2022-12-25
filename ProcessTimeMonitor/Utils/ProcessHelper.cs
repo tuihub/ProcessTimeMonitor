@@ -37,7 +37,7 @@ namespace ProcessTimeMonitor.Utils
             process.WaitForExit();
             Log.Debug("WaitForAllToExit", $"Process {process.ProcessName}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
         }
-        public static async Task WaitForAllToExitAsyncDebug(this Process process, bool isChildProcess = false)
+        public static async Task WaitForAllToExitFullAsync(this Process process, bool isChildProcess = false)
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
@@ -55,7 +55,7 @@ namespace ProcessTimeMonitor.Utils
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
                         Log.Debug("WaitForAllToExitAsyncDebug", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
-                        var childTask = WaitForAllToExitAsyncDebug(childProcess, true);
+                        var childTask = WaitForAllToExitFullAsync(childProcess, true);
                         Log.Debug("WaitForAllToExitAsyncDebug", $"Adding task(Id = {childTask.Id}) to taskIdDict");
                         taskDict.Add(childTask, childProcess);
                         taskList.Add(childTask);

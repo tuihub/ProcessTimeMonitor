@@ -9,18 +9,18 @@ namespace ProcessTimeMonitor
     {
         static void Main(string[] args)
         {
-            //try
-            //{
+            try
+            {
                 Log.Debug("Main", "Starting program");
                 Parser.Default.ParseArguments<Options>(args)
                     .WithParsed<Options>(Run)
                     .WithNotParsed(HandleParseError);
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.Error("Main", $"{e.Message}");
-            //    Log.Debug("Main", $"{e.StackTrace}");
-            //}
+            }
+            catch (Exception e)
+            {
+                Log.Error("Main", $"{e.Message}");
+                Log.Debug("Main", $"{e.StackTrace}");
+            }
         }
 
         private static void HandleParseError(IEnumerable<Error> errs)

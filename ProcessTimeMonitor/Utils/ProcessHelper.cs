@@ -56,7 +56,7 @@ namespace ProcessTimeMonitor.Utils
                         Process childProcess = Process.GetProcessById((int)childProcessId);
                         Log.Debug("WaitForAllToExitFullAsync", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         var childTask = WaitForAllToExitFullAsync(childProcess, true);
-                        Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {childTask.Id}) to taskIdDict");
+                        Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {childTask.Id}) to taskDict");
                         taskDict.Add(childTask, childProcess);
                         taskList.Add(childTask);
                     }
@@ -64,7 +64,7 @@ namespace ProcessTimeMonitor.Utils
             }
             Log.Debug("WaitForAllToExitFullAsync", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
             var curMainProcessTask = process.WaitForExitAsync();
-            Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {curMainProcessTask.Id}) to taskIdDict");
+            Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {curMainProcessTask.Id}) to taskDict");
             taskDict.Add(curMainProcessTask, process);
             taskList.Add(curMainProcessTask);
             while (taskList.Count > 0)

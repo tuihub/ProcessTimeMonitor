@@ -122,9 +122,15 @@ namespace ProcessTimeMonitor.Utils
             }
             catch (InvalidOperationException e)
             {
-                Log.Debug("GetProcessNameEx", e.Message);
-                Log.Debug("GetProcessNameEx", e.StackTrace);
+                Log.Debug("GetProcessNameEx/InvalidOperationException", e.Message);
+                Log.Debug("GetProcessNameEx/InvalidOperationException", e.StackTrace);
                 return "null";
+            }
+            catch (Exception e)
+            {
+                Log.Debug("GetProcessNameEx/Exception", e.Message);
+                Log.Debug("GetProcessNameEx/Exception", e.StackTrace);
+                return "unknown";
             }
         }
     }

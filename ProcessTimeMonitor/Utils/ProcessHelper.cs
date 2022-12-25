@@ -12,7 +12,7 @@ namespace ProcessTimeMonitor.Utils
     public static class ProcessHelper
     {
         // from https://stackoverflow.com/questions/7189117/find-all-child-processes-of-my-own-net-process-find-out-if-a-given-process-is
-        public static void WaitForAllToExit(this Process process)
+        public static void WaitForAllToExit(this Process process, bool isChildProcess = false)
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
@@ -28,14 +28,14 @@ namespace ProcessTimeMonitor.Utils
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
                         Log.Debug("WaitForAllToExit", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
-                        WaitForAllToExit(childProcess);
-                        Log.Debug("WaitForAllToExit", $"Child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited with exit code {childProcess.ExitCode}");
+                        WaitForAllToExit(childProcess, true);
+                        Log.Debug("WaitForAllToExit", $"Child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) exited");
                     }
                 }
             }
             Log.Debug("WaitForAllToExit", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
             process.WaitForExit();
-            Log.Debug("WaitForAllToExit", $"Process {process.ProcessName}(PID = {process.Id}) exited with exit code {process.ExitCode}");
+            Log.Debug("WaitForAllToExit", $"Process {process.ProcessName}(PID = {process.Id}) exited" + (isChildProcess ? "" : $" with exit code {process.ExitCode}"));
         }
     }
 }

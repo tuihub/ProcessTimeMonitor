@@ -14,6 +14,11 @@ namespace ProcessTimeMonitor.Utils
         // from https://stackoverflow.com/questions/7189117/find-all-child-processes-of-my-own-net-process-find-out-if-a-given-process-is
         public static void WaitForAllToExit(this Process process, bool isChildProcess = false)
         {
+            if (process.HasExited)
+            {
+                Log.Warn("WaitForAllToExit", $"Process(PID = {process.Id}) has exited");
+                return;
+            }
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
                 "FROM Win32_Process " +
@@ -39,6 +44,11 @@ namespace ProcessTimeMonitor.Utils
         }
         public static async Task WaitForAllToExitFullAsync(this Process process, bool isChildProcess = false)
         {
+            if (process.HasExited)
+            {
+                Log.Warn("WaitForAllToExitFullAsync", $"Process(PID = {process.Id}) has exited");
+                return;
+            }
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
                 "FROM Win32_Process " +
@@ -91,6 +101,11 @@ namespace ProcessTimeMonitor.Utils
         }
         public static async Task WaitForAllToExitAsync(this Process process, bool isChildProcess = false)
         {
+            if (process.HasExited)
+            {
+                Log.Warn("WaitForAllToExitAsync", $"Process(PID = {process.Id}) has exited");
+                return;
+            }
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
                 "SELECT * " +
                 "FROM Win32_Process " +

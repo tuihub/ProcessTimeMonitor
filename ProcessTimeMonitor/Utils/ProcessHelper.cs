@@ -54,37 +54,37 @@ namespace ProcessTimeMonitor.Utils
                     if ((int)childProcessId != Process.GetCurrentProcess().Id)
                     {
                         Process childProcess = Process.GetProcessById((int)childProcessId);
-                        Log.Debug("WaitForAllToExitAsyncDebug", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
+                        Log.Debug("WaitForAllToExitFullAsync", $"Wait for child process {childProcess.ProcessName}(path = {item["ExecutablePath"]}, PID = {childProcess.Id}, parent PID = {process.Id}) to exit");
                         var childTask = WaitForAllToExitFullAsync(childProcess, true);
-                        Log.Debug("WaitForAllToExitAsyncDebug", $"Adding task(Id = {childTask.Id}) to taskIdDict");
+                        Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {childTask.Id}) to taskIdDict");
                         taskDict.Add(childTask, childProcess);
                         taskList.Add(childTask);
                     }
                 }
             }
-            Log.Debug("WaitForAllToExitAsyncDebug", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
+            Log.Debug("WaitForAllToExitFullAsync", $"Wait for process {process.ProcessName}(PID = {process.Id}) to exit");
             var curMainProcessTask = process.WaitForExitAsync();
-            Log.Debug("WaitForAllToExitAsyncDebug", $"Adding task(Id = {curMainProcessTask.Id}) to taskIdDict");
+            Log.Debug("WaitForAllToExitFullAsync", $"Adding task(Id = {curMainProcessTask.Id}) to taskIdDict");
             taskDict.Add(curMainProcessTask, process);
             taskList.Add(curMainProcessTask);
             while (taskList.Count > 0)
             {
                 Task task = await Task.WhenAny(taskList);
-                Log.Debug("WaitForAllToExitAsyncDebug", $"task(Id = {task.Id}) is done");
+                Log.Debug("WaitForAllToExitFullAsync", $"task(Id = {task.Id}) is done");
                 var curProcess = taskDict.GetValueOrDefault(task);
                 if (curProcess == null)
                 {
-                    Log.Warn("WaitForAllToExitAsyncDebug", $"task(Id = {task.Id}) not exist");
+                    Log.Warn("WaitForAllToExitFullAsync", $"task(Id = {task.Id}) not exist");
                     taskList.Remove(task);
                     continue;
                 }
                 if (task == curMainProcessTask)
                 {
-                    Log.Debug("WaitForAllToExitAsyncDebug", $"Process {curProcess.ProcessName}(PID = {curProcess.Id}) exited" + (isChildProcess ? "" : $" with exit code {curProcess.ExitCode}"));
+                    Log.Debug("WaitForAllToExitFullAsync", $"Process {curProcess.ProcessName}(PID = {curProcess.Id}) exited" + (isChildProcess ? "" : $" with exit code {curProcess.ExitCode}"));
                 }
                 else
                 {
-                    Log.Debug("WaitForAllToExitAsyncDebug", $"Child process {curProcess.ProcessName}(PID = {curProcess.Id}, parent PID = {process.Id}) exited");
+                    Log.Debug("WaitForAllToExitFullAsync", $"Child process {curProcess.ProcessName}(PID = {curProcess.Id}, parent PID = {process.Id}) exited");
                 }
                 taskList.Remove(task);
             }

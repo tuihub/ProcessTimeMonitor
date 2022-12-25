@@ -45,7 +45,7 @@ namespace ProcessTimeMonitor
             }
             Process process = new Process();
             var commandSeq = opts.CommandSeq;
-            Log.Debug("Run", $"commandSeq = {commandSeq}");
+            Log.Debug("Run", $"commandSeq = {String.Join(", ", commandSeq)}");
             process.StartInfo.FileName = commandSeq.First();
             Log.Debug("Run", $"process.StartInfo.FileName = {commandSeq.First()}");
             bool isFirstArg = true;
@@ -80,7 +80,9 @@ namespace ProcessTimeMonitor
             Log.Debug("Run", $"startDt = {startDt}");
             Log.Debug("Run", $"process.Id = {process.Id}");
             Log.Debug("Run", $"process.ProcessName = {process.ProcessName}");
-            process.WaitForAllToExit();
+            //process.WaitForAllToExit();
+            //process.WaitForAllToExitAsync().Wait();
+            process.WaitForAllToExitAsyncDebug().Wait();
             var endDt = DateTime.Now;
             Log.Debug("Run", $"endDt = {endDt}");
             var timeElapsed = endDt - startDt;

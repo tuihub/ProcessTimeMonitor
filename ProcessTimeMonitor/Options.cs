@@ -16,9 +16,9 @@ namespace ProcessTimeMonitor
         public bool FullAsync { get; set; }
         [Option('s', "shell", Default = false, HelpText = "Enable UseShellExecute.")]
         public bool UseShellExecute { get; set; }
-        [Option('d', "dir", HelpText = "Set working directory.")]
+        [Option('d', "dir", HelpText = "Working directory.")]
         public string? Dir { get; set; }
-        [Option('c', "command", Required = true, HelpText = "Set command to run.")]
+        [Option('c', "command", Required = true, HelpText = "Command to run.")]
         public IEnumerable<string> CommandSeq { get; set; } = null!;
     }
 }

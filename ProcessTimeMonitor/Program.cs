@@ -84,7 +84,8 @@ namespace ProcessTimeMonitor
             Log.Debug("Run", $"startDt = {startDt}");
             Log.Debug("Run", $"process.Id = {process.Id}");
             Log.Debug("Run", $"process.process.GetProcessNameEx = {process.GetProcessNameEx()}");
-            //process.WaitForAllToExit();
+            if (opts.Sync == true)
+                process.WaitForAllToExit();
             if (opts.FullAsync == true)
                 process.WaitForAllToExitFullAsync().Wait();
             else

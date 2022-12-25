@@ -10,9 +10,11 @@ namespace ProcessTimeMonitor
 {
     internal class Options
     {
-        [Option('p', "path", Required = true, HelpText = "App path to run.")]
-        public string AppPath { get; set; } = null!;
         [Option("debug", Default = false, HelpText = "Enable debug log.")]
         public bool Debug { get; set; }
+        [Option('d', "dir", HelpText = "Set working directory.")]
+        public string? Dir { get; set; }
+        [Option('c', "command", Required = true, HelpText = "Command to run.")]
+        public IEnumerable<string> CommandSeq { get; set; } = null!;
     }
 }

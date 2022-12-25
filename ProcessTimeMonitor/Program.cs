@@ -1,5 +1,7 @@
 ﻿using CommandLine;
+using ProcessTimeMonitor.Utils;
 using SavedataManager.Utils;
+using System.Diagnostics;
 
 namespace ProcessTimeMonitor
 {
@@ -41,6 +43,30 @@ namespace ProcessTimeMonitor
                 Log.Debug("Run", "Setting Loglevel to DEBUG");
                 Global.LogLevel = LogLevel.DEBUG;
             }
+            Process process = new Process();
+            var commandSeq = opts.CommandSeq;
+            process.StartInfo.FileName = commandSeq.First();
+            bool isFirstArg = true;
+            foreach (var arg in commandSeq)
+            {
+                if (isFirstArg)
+                {
+                    isFirstArg = false;
+                    continue;
+                }
+                process.StartInfo.ArgumentList.Add(arg);
+            }
+            var workDir = opts.Dir;
+            if (workDir == null)
+            {
+                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(process.StartInfo.FileName);
+            }
+            else
+            {
+                process.StartInfo.WorkingDirectory = workDir;
+            }
+            process.Start();
+            process.WaitForAllToExit();
         }
     }
 }

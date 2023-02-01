@@ -88,7 +88,7 @@ namespace ProcessTimeMonitor
                 process.WaitForAllToExit();
             else if (opts.FullAsync == true)
                 process.WaitForAllToExitFullAsync().Wait();
-            else
+            else if (opts.Async == true)
                 process.WaitForAllToExitAsync().Wait();
             var endDt = DateTime.Now;
             Log.Debug("Run", $"endDt = {endDt}");

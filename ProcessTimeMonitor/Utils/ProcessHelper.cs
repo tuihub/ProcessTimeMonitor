@@ -151,7 +151,23 @@ namespace ProcessTimeMonitor.Utils
 
         public static void WaitForProcToExit(string name, string? path = null)
         {
+            Log.Debug("WaitForProcToExit", $"name = {name}, path = {(path == null ? "null" : path)}");
             Process[] processes = Process.GetProcessesByName(name);
+            int sleepCountLimit = 10, sleepCount = 0;
+            while (processes.Length == 0)
+            {
+                if (sleepCount > sleepCountLimit)
+                {
+                    Log.Error("WaitForProcToExit", $"Sleep time limit exceeded, exiting.");
+                    Environment.Exit(0);
+                }
+                Log.Debug("WaitForProcToExit", $"processes.Length == 0, sleeping for 1000ms({sleepCount} / {sleepCountLimit}).");
+                sleepCount++;
+                Thread.Sleep(1000);
+                processes = Process.GetProcessesByName(name);
+                if (path != null)
+                    processes = processes.Where(x => x.MainModule != null && x.MainModule.FileName == path).ToArray();
+            }
             foreach (var process in processes)
                 Log.Debug("WaitForProcToExit/GetProcessesByName", $"process [id = {process.Id}, name = {process.ProcessName}, path = {(process.MainModule == null ? "null" : process.MainModule.FileName)}]");
             Log.Debug("WaitForProcToExit", $"path = {(path == null ? "null" : path)}");

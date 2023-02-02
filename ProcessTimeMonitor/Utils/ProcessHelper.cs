@@ -148,5 +148,24 @@ namespace ProcessTimeMonitor.Utils
                 return "unknown";
             }
         }
+
+        public static void WaitForProcToExit(string name, string? path = null)
+        {
+            Process[] processes = Process.GetProcessesByName(name);
+            foreach (var process in processes)
+                Log.Debug("WaitForProcToExit/GetProcessesByName", $"process [id = {process.Id}, name = {process.ProcessName}, path = {(process.MainModule == null ? "null" : process.MainModule.FileName)}]");
+            Log.Debug("WaitForProcToExit", $"path = {(path == null ? "null" : path)}");
+            if (path != null)
+            {
+                processes = processes.Where(x => x.MainModule != null && x.MainModule.FileName == path).ToArray();
+                foreach (var process in processes)
+                    Log.Debug("WaitForProcToExit/GetProcessesByNameFiltered", $"process [id = {process.Id}, name = {process.ProcessName}, path = {(process.MainModule == null ? "null" : process.MainModule.FileName)}]");
+            }
+            foreach (var process in processes)
+            {
+                Log.Debug("WaitForProcToExit", $"Wait for process[id = {process.Id}, name = {process.ProcessName}, path = {(process.MainModule == null ? "null" : process.MainModule.FileName)}] to exit.");
+                process.WaitForExit();
+            }
+        }
     }
 }

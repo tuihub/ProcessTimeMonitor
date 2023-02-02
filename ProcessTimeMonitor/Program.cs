@@ -84,7 +84,26 @@ namespace ProcessTimeMonitor
             Log.Debug("Run", $"startDt = {startDt}");
             Log.Debug("Run", $"process.Id = {process.Id}");
             Log.Debug("Run", $"process.process.GetProcessNameEx = {process.GetProcessNameEx()}");
-            if (opts.Sync == true)
+            string procMonName = "";
+            if (opts.ProcessName == true || opts.ProcessPath == true)
+            {
+                if (opts.ProcessMonPath == null)
+                {
+                    Log.Error("Run", $"ProcName or ProcPath mode, ProcessMonPath = null, exiting.");
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    procMonName = Path.GetFileNameWithoutExtension(opts.ProcessMonPath);
+                }
+            }
+            if (opts.Simple == true)
+                process.WaitForExit();
+            else if (opts.ProcessName == true)
+                ProcessHelper.WaitForProcToExit(procMonName);
+            else if (opts.ProcessPath == true)
+                ProcessHelper.WaitForProcToExit(procMonName, opts.ProcessMonPath);
+            else if (opts.Sync == true)
                 process.WaitForAllToExit();
             else if (opts.FullAsync == true)
                 process.WaitForAllToExitFullAsync().Wait();

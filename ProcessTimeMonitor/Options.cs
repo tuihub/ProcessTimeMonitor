@@ -18,6 +18,8 @@ namespace ProcessTimeMonitor
         bool ProcessName { get; set; }
         [Option("proc-path", Default = false, SetName = "sync", HelpText = "Enable process path mode(process monitoring, one process only).")]
         bool ProcessPath { get; set; }
+        [Option("proc-mon-path", Required = false, HelpText = "Process executable path to monitor.")]
+        public string? ProcessMonPath { get; set; }
     }
     interface IAsyncOptions
     {
@@ -34,6 +36,7 @@ namespace ProcessTimeMonitor
         public bool Simple { get; set; }
         public bool ProcessName { get; set; }
         public bool ProcessPath { get; set; }
+        public string? ProcessMonPath { get; set; }
         public bool Async { get; set; }
         public bool FullAsync { get; set; }
         [Option('s', "shell", Default = false, HelpText = "Enable UseShellExecute.")]

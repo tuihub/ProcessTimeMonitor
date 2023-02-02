@@ -40,8 +40,8 @@ namespace ProcessTimeMonitor
         {
             if (opts.Debug == true)
             {
-                Log.Debug("Run", "Setting Loglevel to DEBUG");
                 Global.LogLevel = LogLevel.DEBUG;
+                Log.Debug("Run", "Setting Loglevel to DEBUG");
             }
             Process process = new Process();
             if (opts.UseShellExecute == true)

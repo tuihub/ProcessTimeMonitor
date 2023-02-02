@@ -73,16 +73,23 @@ namespace ProcessTimeMonitor
             {
                 workDir = Path.GetDirectoryName(process.StartInfo.FileName);
                 Log.Debug("Run", $"workDir is null or empty, setting workDir to {Path.GetDirectoryName(process.StartInfo.FileName)}");
-                if (String.IsNullOrEmpty(workDir))
-                {
-                    workDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    Log.Debug("Run", $"Path.GetDirectoryName(process.StartInfo.FileName) is null or empty, setting workDir to {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}");
-                }
+                //if (String.IsNullOrEmpty(workDir))
+                //{
+                //    workDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                //    Log.Debug("Run", $"Path.GetDirectoryName(process.StartInfo.FileName) is null or empty, setting workDir to {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}");
+                //}
             }
-            Directory.SetCurrentDirectory(workDir);
-            Log.Debug("Run", $"Setting CurrentDirectory to {workDir}");
-            process.StartInfo.WorkingDirectory = workDir;
-            Log.Debug("Run", $"Setting process.StartInfo.WorkingDirectory to {workDir}");
+            if (String.IsNullOrEmpty(workDir) == true)
+            {
+                Log.Debug("Run", $"workDir is null or empty, doing nothing.");
+            }
+            else
+            {
+                Directory.SetCurrentDirectory(workDir);
+                Log.Debug("Run", $"Setting CurrentDirectory to {workDir}");
+                process.StartInfo.WorkingDirectory = workDir;
+                Log.Debug("Run", $"Setting process.StartInfo.WorkingDirectory to {workDir}");
+            }
             Log.Info("Run", $"Starting program: {process.StartInfo.FileName}");
             process.Start();
             var startDt = DateTime.Now;

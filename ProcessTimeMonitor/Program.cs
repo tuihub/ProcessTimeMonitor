@@ -89,12 +89,21 @@ namespace ProcessTimeMonitor
             {
                 if (opts.ProcessMonPath == null)
                 {
-                    Log.Error("Run", $"ProcName or ProcPath mode, ProcessMonPath = null, exiting.");
+                    Log.Error("Run/procMonName", $"ProcName or ProcPath mode, ProcessMonPath = null, exiting.");
                     Environment.Exit(0);
                 }
                 else
                 {
-                    procMonName = Path.GetFileNameWithoutExtension(opts.ProcessMonPath);
+                    if (OperatingSystem.IsWindows() == true)
+                    {
+                        Log.Debug("Run/procMonName", $"Windows platform, procMonName = GetFileNameWithoutExtension()");
+                        procMonName = Path.GetFileNameWithoutExtension(opts.ProcessMonPath);
+                    }
+                    else
+                    {
+                        Log.Debug("Run/procMonName", $"Other platform, procMonName = GetFileName()");
+                        procMonName = Path.GetFileName(opts.ProcessMonPath);
+                    }
                 }
             }
             if (opts.Simple == true)

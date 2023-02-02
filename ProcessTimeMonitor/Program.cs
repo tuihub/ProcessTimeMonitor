@@ -73,6 +73,11 @@ namespace ProcessTimeMonitor
             {
                 workDir = Path.GetDirectoryName(process.StartInfo.FileName);
                 Log.Debug("Run", $"workDir is null, setting workDir to {Path.GetDirectoryName(process.StartInfo.FileName)}");
+                if (workDir == null)
+                {
+                    workDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    Log.Debug("Run", $"Path.GetDirectoryName(process.StartInfo.FileName) is null, setting workDir to {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}");
+                }
             }
             Directory.SetCurrentDirectory(workDir);
             Log.Debug("Run", $"Setting CurrentDirectory to {workDir}");

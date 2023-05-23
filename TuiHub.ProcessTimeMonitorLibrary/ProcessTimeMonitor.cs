@@ -2,10 +2,10 @@
 
 namespace TuiHub.ProcessTimeMonitorLibrary
 {
-    public partial class ProcessTimeMonitor<T>
+    public partial class ProcessTimeMonitor
     {
-        private readonly ILogger<T>? _logger;
-        public ProcessTimeMonitor(ILogger<T>? logger)
+        private readonly ILogger? _logger;
+        public ProcessTimeMonitor(ILogger? logger = null)
         {
             _logger = logger;
         }

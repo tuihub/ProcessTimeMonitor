@@ -14,12 +14,9 @@ namespace TuiHub.ProcessTimeMonitorLibrary
         {
             startDT ??= DateTime.MinValue;
             _logger?.LogDebug($"name = {name}, path = {(path == null ? "null" : path)}");
-            // must use array, otherwise may cause "Only part of a ReadProcessMemory or WriteProcessMemory request was completed" exception
-            var processes = Process.GetProcessesByName(name).Where(x => x.StartTime >= startDT).ToArray();
-            if (path != null)
-                processes = processes.Where(x => x.MainModule != null && x.MainModule.FileName == path).ToArray();
             int sleepCount = 0;
-            while (processes.Count() == 0)
+            Process[] processes;
+            do
             {
                 if (sleepCount > sleepCountLimit)
                 {
@@ -29,10 +26,12 @@ namespace TuiHub.ProcessTimeMonitorLibrary
                 _logger?.LogDebug($"processes.Length == 0, sleeping for {sleepMilliseconds}ms({sleepCount} / {sleepCountLimit}).");
                 sleepCount++;
                 await Task.Delay(sleepMilliseconds);
+                // must use array, otherwise may cause "Only part of a ReadProcessMemory or WriteProcessMemory request was completed" exception
+                // sleep before initial GetProcessByName, may reduce above exception
                 processes = Process.GetProcessesByName(name).Where(x => x.StartTime >= startDT).ToArray();
                 if (path != null)
                     processes = processes.Where(x => x.MainModule != null && x.MainModule.FileName == path).ToArray();
-            }
+            } while (processes.Count() == 0);
             foreach (var process in processes)
                 _logger?.LogDebug($"GetProcessesByName, process [id = {process.Id}, name = {process.ProcessName}, path = {(process.MainModule == null ? "null" : process.MainModule.FileName)}]");
             var start = DateTime.Now;

@@ -50,5 +50,13 @@ namespace TuiHub.ProcessTimeMonitorLibrary
             exitCode ??= 0;
             return (start, end, (int)exitCode);
         }
+
+        public async Task<(DateTime start, DateTime end, int exitCode)> WaitForProcToExit(Process process)
+        {
+            var start = DateTime.Now;
+            await process.WaitForExitAsync();
+            var end = DateTime.Now;
+            return (start, end, process.ExitCode);
+        }
     }
 }
